@@ -36,9 +36,10 @@ class GRNMF(object):
     def __init__(self, data, graph_regularization_matrix, rank=2):
         self.data = data
         self.W = graph_regularization_matrix
-        self.L, self.D = sparse.csgraph.laplacian(self.W, 
-            return_diag=True, 
-            normed=False)
+        if self.W is not None:
+            self.L, self.D = sparse.csgraph.laplacian(self.W, 
+                return_diag=True, 
+                normed=False)
 
         self.rank = rank
         self.N_features, self.N_dpts = self.data.shape
@@ -66,12 +67,15 @@ class GRNMF(object):
         while not_converged and under_maxiter:
             iter_i += 1
             self.GRNMF_step(lamb)
-            new_obj = self.GRNMF_objective(lamb)
-            if not silent:
-                print (last_obj - new_obj)/tol
-            if (last_obj - new_obj) < tol:
-                not_converged = False
-            last_obj = new_obj
+            if tol == 0:
+                not_converged = True
+            else:
+                new_obj = self.GRNMF_objective(lamb)
+                if not silent:
+                    print (last_obj - new_obj)/tol
+                if (last_obj - new_obj) < tol:
+                    not_converged = False
+                last_obj = new_obj
 
             if iter_i > maxiter:
                 under_maxiter = False
