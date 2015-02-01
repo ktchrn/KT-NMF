@@ -67,6 +67,8 @@ class GRNMF(object):
             iter_i += 1
             self.GRNMF_step(lamb)
             new_obj = self.GRNMF_objective(lamb)
+            if not silent:
+                print (last_obj - new_obj)/tol
             if (last_obj - new_obj) < tol:
                 not_converged = False
             last_obj = new_obj
