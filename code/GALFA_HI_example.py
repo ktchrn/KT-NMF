@@ -1,4 +1,5 @@
 import adjacency
+import argparse
 from astropy.io import fits
 import cube_pipeline
 import numpy as np
@@ -6,10 +7,12 @@ import GRNMF
     
 
 if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('data_fname')
+    args = parser.parse_args()
+
     silent = False
     W_type = 'spatial'
-    data_dir = '/Users/K/Downloads/'
-    data_fname = 'Smallified_LLCC.fits'
     K = 36
     lamb = 5000.
     maxiter = 1000
@@ -21,7 +24,7 @@ if __name__=='__main__':
     if not silent:
         print "Preparing data"
 
-    fname = data_dir + data_fname
+    fname = str(args.data_fname)
     with fits.open(fname) as fits_file:
         #hard convert to double to avoid bit order issues
         data = np.array(fits_file[0].data, dtype=np.double)
